@@ -1,9 +1,9 @@
 {
   "rules": {
-    "users": {
+    "presence": {
+      ".read": "auth != null",
       "$uid": {
-        ".read": "$uid === auth.uid",
-        ".write": "$uid === auth.uid"
+        ".write": "auth != null && $uid === auth.uid"
       }
     },
     "peers": {
@@ -12,8 +12,8 @@
           ".read": "auth != null && auth.uid == $uid",
           ".write": "auth != null && auth.uid == $uid",
           "$offerId": {
-        		".read": "auth != null && data.child('uid').val() == auth.uid",
-            ".write": "auth != null && !data.exists() && newData.child('uid').val() == auth.uid",
+            ".read": "auth != null && data.child('uid').val() == auth.uid",
+            ".write": "auth != null && !data.exists() && newData.child('uid').val() == auth.uid"
           }
         }
       }
