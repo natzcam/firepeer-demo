@@ -20,7 +20,6 @@ $(function() {
 
   //new chat with another user
   function newChat(conn) {
-    var otherUserUid = $("#users ." + conn.uid).text();
     var $messageArea = $("<div class='message-area'>").addClass(conn.uid);
     var $messages = $("<div class='messages'>");
     var $input = $("<input type='text'>").on("keypress", function(event) {
@@ -37,10 +36,10 @@ $(function() {
     function newMessage(sender, message) {
       $messages.append($("<p class='m'>").text(sender + ": " + message));
     }
-    newMessage("", "Connected to " + otherUserUid);
+    newMessage("", "Connected to " + conn.uid);
 
     conn.on("data", function(data) {
-      newMessage(otherUserUid, data.toString());
+      newMessage(conn.uid, data.toString());
     });
 
     conn.on("close", function() {
