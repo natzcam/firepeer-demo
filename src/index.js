@@ -14,15 +14,14 @@ firebase.initializeApp({
 $(function() {
   var firePeer = new FirePeer(firebase, {
     allowOffer: function(offer) {
-      return confirm($("#users ." + offer.uid).text() + " would like to chat");
+      return confirm(offer.uid + " would like to chat");
     }
   });
-  var name = prompt("Whats your display name?");
-  $("#name").text(name);
 
+  //new chat with another user
   function newChat(conn) {
-    var name = $("#users ." + conn.uid).text();
-    var $parent = $("<div class='message-area'>").addClass(conn.uid);
+    var otherUserUid = $("#users ." + conn.uid).text();
+    var $messageArea = $("<div class='message-area'>").addClass(conn.uid);
     var $messages = $("<div class='messages'>");
     var $input = $("<input type='text'>").on("keypress", function(event) {
       if (event.keyCode == 13) {
@@ -33,72 +32,88 @@ $(function() {
       }
     });
 
+    $("#chats").append($messageArea.append($messages).append($input));
+
     function newMessage(sender, message) {
       $messages.append($("<p class='m'>").text(sender + ": " + message));
     }
-
-    newMessage("", "Connected to " + name);
-    $parent.append($messages).append($input);
-    $("#chats").append($parent);
+    newMessage("", "Connected to " + otherUserUid);
 
     conn.on("data", function(data) {
-      newMessage(name, data.toString());
+      newMessage(otherUserUid, data.toString());
     });
 
     conn.on("close", function() {
       console.log("close");
-      $parent.remove();
+      $messageArea.remove();
     });
 
     conn.on("error", console.error);
   }
 
+  // on firebase signin
+  function onAuth(user) {
+    if (user == null) {
+      //logged out
+      $("#users").text("");
+      $("#chats").text("");
+      $("#uid").text("");
+      return;
+    }
+
+    $("#uid").text(user.uid);
+
+    //announce your arrival
+    firebase
+      .database()
+      .ref("presence/" + user.uid)
+      .on("value", function(snap) {
+        //remove node onDisconnect
+        snap.ref.onDisconnect().remove();
+        snap.ref.set(true);
+      });
+
+    // watch online users
+    firebase
+      .database()
+      .ref("presence")
+      .on("value", function(snaps) {
+        var noUsers = true;
+        $("#users").text("");
+
+        snaps.forEach(function(snap) {
+          var uid = snap.key;
+
+          //if not you, then create a node
+          if (user.uid != uid) {
+            noUsers = false;
+            var $user = $("<div class='user'>")
+              .addClass(uid)
+              .text(uid)
+              .click(function() {
+                var $chat = $("#chats ." + uid);
+                if ($chat.length) {
+                  //has chat already
+                  $("#chats .message-area").hide();
+                  $chat.show();
+                } else {
+                  // connect if no chat yet
+                  firePeer.connect(uid).catch(console.error);
+                }
+              });
+            $("#users").append($user);
+          }
+        });
+
+        if (noUsers) {
+          $("#users").text(
+            "No others online users at the moment. Use an incognito tab to talk to yourself. :)"
+          );
+        }
+      });
+  }
+
   firePeer.on("connection", newChat);
-
-  firebase
-    .auth()
-    .signInAnonymously()
-    .then(function(cred) {
-      var yourUid = cred.user.uid;
-
-      //announce your arrival
-      firebase
-        .database()
-        .ref("presence/" + yourUid)
-        .on("value", function(snap) {
-          //remove node onDisconnect
-          snap.ref.onDisconnect().remove();
-          //set your name
-          snap.ref.set(name);
-        });
-
-      // watch online users
-      firebase
-        .database()
-        .ref("presence")
-        .on("value", function(snaps) {
-          $("#users").html("");
-          snaps.forEach(function(snap) {
-            //if not you, then create a node
-            var uid = snap.key;
-            var name = snap.val();
-            if (yourUid != uid) {
-              var $user = $("<div class='user'>")
-                .addClass(uid)
-                .text(name) //show the name of the user
-                .click(function() {
-                  var $chat = $("#chats ." + uid);
-                  if ($chat.length) {
-                    //has chat already
-                    $("#chats .message-area").hide();
-                    $chat.show();
-                  } else {
-                    firePeer.connect(uid).catch(console.error);
-                  }
-                });
-              $("#users").append($user);
-            }
-          });
-        });
-    });
+  firebase.auth().onAuthStateChanged(onAuth);
+  firebase.auth().signInAnonymously();
 });
