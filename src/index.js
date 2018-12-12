@@ -110,7 +110,7 @@ $(function() {
                 var $chat = $("#chats ." + id);
                 if ($chat.length) {
                   //has chat already
-                  $("#chats .message-area").hide();
+                  $("#chats .chat").hide();
                   $chat.show();
                 } else {
                   // connect if no chat yet
