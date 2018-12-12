@@ -2,18 +2,18 @@
   "rules": {
     "presence": {
       ".read": "auth != null",
-      "$uid": {
-        ".write": "auth != null && $uid === auth.uid"
-      }
+      ".write": "auth != null"
     },
     "peers": {
       "$uid": {
-        "offers": {
-          ".read": "auth != null && auth.uid == $uid",
-          ".write": "auth != null && auth.uid == $uid",
-          "$offerId": {
-            ".read": "auth != null && data.child('uid').val() == auth.uid",
-            ".write": "auth != null && !data.exists() && newData.child('uid').val() == auth.uid"
+        "$id": {
+          "offers": {
+            ".read": "auth != null && auth.uid == $uid",
+            ".write": "auth != null && auth.uid == $uid",
+            "$offerId": {
+              ".read": "auth != null && data.child('uid').val() == auth.uid",
+              ".write": "auth != null && !data.exists() && newData.child('uid').val() == auth.uid"
+            }
           }
         }
       }
