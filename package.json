@@ -20,7 +20,7 @@
   "license": "MIT",
   "dependencies": {
     "firebase": "^5.5.7",
-    "firepeer": "file:../firepeer",
+    "firepeer": "^0.1.5",
     "jquery": "^3.3.1"
   },
   "devDependencies": {
