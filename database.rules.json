@@ -7,12 +7,22 @@
     "peers": {
       "$uid": {
         "$id": {
-          "offers": {
-            ".read": "auth != null && auth.uid == $uid",
-            ".write": "auth != null && auth.uid == $uid",
-            "$offerId": {
-              ".read": "auth != null && data.child('uid').val() == auth.uid",
-              ".write": "auth != null && !data.exists() && newData.child('uid').val() == auth.uid"
+          ".read": "auth != null && auth.uid == $uid",
+          ".write": "auth != null && auth.uid == $uid",
+          "$otherUid": {
+            "$otherId": {
+              ".read": "auth != null && auth.uid == $otherUid",
+              ".write": "auth != null && auth.uid == $otherUid",
+              ".validate": "newData.hasChildren(['sdp', 'type']) || newData.hasChildren(['type', 'error'])",
+              "sdp": {
+                ".validate": "newData.isString() && newData.val().length < 4000"
+              },
+              "error": {
+                ".validate": "newData.isString() && newData.val().length < 1000"
+              },
+              "type": {
+                ".validate": "newData.val() == 'offer' || newData.val() == 'answer'"
+              }
             }
           }
         }

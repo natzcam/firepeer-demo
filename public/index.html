@@ -8,13 +8,22 @@
   </head>
 
   <body>
-    <div id="header">
-      <strong>UID: </strong><span id="uid"></span> &nbsp;<strong>ID: </strong
-      ><span id="id"></span>
+    <div>
+      <p><strong>Your User ID: </strong><span id="uid"></span></p>
+      <p><strong>Your Client ID: </strong><span id="id"></span></p>
     </div>
-    <div id="content">
-      <div id="users"></div>
-      <div id="chats"></div>
+    <div>
+      <div>
+          <label>Peer User ID<input id="receiverUid" type="text" ></input></label>
+          <label>Peer Client ID<input id="receiverId" type="text" ></input></label>
+          <input id="connectBtn" type="button" value="Connect"></input>
+      </div>
+      <div>
+          <label>Message<input id="message" type="text" ></input></label>
+          <input id="messageBtn" type="button" value="Send"></input>
+      </div>
+      <h2>Received via P2P:</h2>
+      <h3 id="received"></h3>
     </div>
     <script defer src="bundle.js"></script>
   </body>
