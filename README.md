@@ -1,7 +1,5 @@
-# firepeer demo p2p chat
+# firepeer p2p demo
 
-A P2P chat made with firepeer
-
-100 lines of JS, more or less
+Exchange p2p messages
 
 https://firepeer-demo.firebaseapp.com
