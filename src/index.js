@@ -37,7 +37,7 @@ document.addEventListener("DOMContentLoaded", function() {
         $receiverId.value
       );
     } else {
-      alert("User Id and Client Id are required");
+      alert("User Id and Peer Id required");
     }
   };
 
