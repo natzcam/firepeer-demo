@@ -9,7 +9,7 @@
     "watch": "watchify src/index.js -o public/bundle.js",
     "build": "browserify src/index.js -o public/bundle.js",
     "serve": "firebase serve",
-    "deploy": "firebase deploy"
+    "deploy": "browserify src/index.js -o public/bundle.js && firebase deploy"
   },
   "keywords": [
     "firepeer",
@@ -20,7 +20,7 @@
   "license": "MIT",
   "dependencies": {
     "firebase": "^5.7.2",
-    "firepeer": "^0.1.14"
+    "firepeer": "^0.1.15"
   },
   "devDependencies": {
     "browserify": "^16.2.3",
