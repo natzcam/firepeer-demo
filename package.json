@@ -19,14 +19,14 @@
   "author": "natzcam",
   "license": "MIT",
   "dependencies": {
-    "firebase": "^5.5.7",
-    "firepeer": "file:../firepeer"
+    "firebase": "^5.7.2",
+    "firepeer": "^0.1.14"
   },
   "devDependencies": {
     "browserify": "^16.2.3",
-    "concurrently": "^4.0.1",
-    "firebase-tools": "^6.0.1",
-    "live-server": "^1.2.0",
+    "concurrently": "^4.1.0",
+    "firebase-tools": "^6.2.2",
+    "live-server": "^1.2.1",
     "watchify": "^3.11.0"
   }
 }
